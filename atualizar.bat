@@ -3,37 +3,49 @@ title Atualizador
 
 echo Baixando atualizacao...
 
-:: URL do ZIP do repositorio
 set ZIP_URL=https://github.com/GeekPfs/regpast/archive/refs/heads/main.zip
-
-:: Arquivos temporarios
 set ZIP_FILE=update.zip
 set TEMP_DIR=update_temp
+set REPO_FOLDER=regpast-main
 
-:: Limpa temporarios antigos
-if exist %ZIP_FILE% del %ZIP_FILE%
-if exist %TEMP_DIR% rmdir /s /q %TEMP_DIR%
+:: Limpeza
+if exist "%ZIP_FILE%" del "%ZIP_FILE%"
+if exist "%TEMP_DIR%" rmdir /s /q "%TEMP_DIR%"
 
-:: Baixa ZIP
+:: Download
 powershell -Command "Invoke-WebRequest -Uri '%ZIP_URL%' -OutFile '%ZIP_FILE%'"
 
 echo Extraindo arquivos...
 
-:: Extrai ZIP
+:: Extract
 powershell -Command "Expand-Archive -Path '%ZIP_FILE%' -DestinationPath '%TEMP_DIR%'"
 
-echo Atualizando pasta content...
+:: Caminho da content no zip
+set ZIP_CONTENT=%TEMP_DIR%\%REPO_FOLDER%\content
 
-:: Remove content antiga
-if exist content rmdir /s /q content
+echo Verificando conteudo no update...
 
-:: Copia nova content
-xcopy "%TEMP_DIR%\regpast-main\content" "content" /e /i /y
+:: Só atualiza se existir content no ZIP
+if exist "%ZIP_CONTENT%" (
+
+    echo Content encontrada no update. Aplicando...
+
+    :: Agora sim remove local SE existir
+    if exist "content" (
+        rmdir /s /q "content"
+    )
+
+    :: Copia nova versão
+    xcopy "%ZIP_CONTENT%" "content\" /e /i /y
+
+) else (
+    echo Nenhuma pasta content encontrada no update. Nada sera alterado.
+)
 
 :: Limpeza
-del %ZIP_FILE%
-rmdir /s /q %TEMP_DIR%
+del "%ZIP_FILE%"
+rmdir /s /q "%TEMP_DIR%"
 
 echo.
-echo Atualizacao concluida!
+echo Atualizacao finalizada!
 pause
