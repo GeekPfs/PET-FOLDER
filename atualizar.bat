@@ -3,10 +3,10 @@ title Atualizador
 
 echo Baixando atualizacao...
 
-set ZIP_URL=https://github.com/GeekPfs/regpast/archive/refs/heads/main.zip
+set ZIP_URL=https://github.com/GeekPfs/PET-FOLDER/archive/refs/heads/main.zip
 set ZIP_FILE=update.zip
 set TEMP_DIR=update_temp
-set REPO_FOLDER=regpast-main
+set REPO_FOLDER=PET-FOLDER-main
 
 :: Limpeza
 if exist "%ZIP_FILE%" del "%ZIP_FILE%"
